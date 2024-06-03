@@ -3,32 +3,32 @@ resource "kubernetes_deployment" "name" {
         name = "node-app-deployment"
     }
     spec {
-       replicas = 1
-       selector {
-        match_labels = {
-            "app" = "node-app"
-        }
-       } 
-    }
-    template {
-        metadata {
-            labels = {
+        replicas = 1
+        selector {
+            match_labels = {
                 "app" = "node-app"
             }
         }
-        spec {
-            container {
-                name = "node-app"
-                image = var.container_image
-                port {
-                    container_port = 3000
+        template {
+            metadata {
+                labels = {
+                    "app" = "node-app"
+                }
+            }
+            spec {
+                container {
+                    name = "node-app"
+                    image = var.container_image
+                    port {
+                        container_port = 3000
+                    }
                 }
             }
         }
     }
 }
 
-# First we need compute address
+# First, we need to define the compute address
 resource "google_compute_address" "default" {
     name   = "ipforservice"
     region = var.region
@@ -40,7 +40,7 @@ resource "kubernetes_service" "appservice" {
         name = "node-app-service"
     }
     spec {
-        type = "LoadBalancer"
+        type            = "LoadBalancer"
         load_balancer_ip = google_compute_address.default.address
         port {
             protocol    = "TCP"
