@@ -12,8 +12,8 @@ resource "kubernetes_deployment" "name" {
     }
     template {
         metadata {
-            lables = {
-                "app" = node-app
+            labels = {
+                "app" = "node-app"
             }
         }
         spec {
@@ -28,23 +28,23 @@ resource "kubernetes_deployment" "name" {
     }
 }
 
-#first we need compute address
-resource "googel_compute_address" "default" {
-    name = "ipforservice"
-    region = "var.region"
+# First we need compute address
+resource "google_compute_address" "default" {
+    name   = "ipforservice"
+    region = var.region
 }
 
-#add main resource
+# Add main resource
 resource "kubernetes_service" "appservice" {
     metadata {
         name = "node-app-service"
     }
     spec {
         type = "LoadBalancer"
-        load_balancer_ip = googel_compute_address.default.address
+        load_balancer_ip = google_compute_address.default.address
         port {
-            protocol = "TCP"
-            port = 80
+            protocol    = "TCP"
+            port        = 80
             target_port = 3000
         }
     }
